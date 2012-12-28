@@ -2,7 +2,7 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
 puts $LOAD_PATH.first
 require 'markov'
 
-text = File.read('const.txt')
+text = File.read('input_examples/constitution.txt')
 
 m = Markov::Chars.new(text)
 m.populate_input_sequences(5)
