@@ -1,4 +1,5 @@
-$LOAD_PATH.unshift File.dirname(__FILE__)
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
+puts $LOAD_PATH.first
 require 'markov'
 
 text = File.read('const.txt')
