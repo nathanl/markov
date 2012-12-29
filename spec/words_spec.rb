@@ -30,4 +30,33 @@ describe Markov::Words do
       )
     end
   end
+
+  describe "generated text" do
+
+    let(:input_text) { File.read('input_examples/raven.txt') }
+
+    context "when produced from roughly word-size chunks" do
+
+      it "has mostly real phrases, rearranged" do
+        srand(1)
+        words = Markov::Words.new(input_text)
+        words.populate_input_sequences(4)
+        expect(words.generate(29)).to eq('enchanted on the silken still')
+      end
+
+    end
+  end
+
+  describe "always forming sequences that occur in the input" do
+
+    let(:input_text) { File.read('input_examples/constitution.txt') }
+
+    it "doesn't screw up" do
+      srand(3)
+      words = Markov::Words.new(input_text)
+      words.populate_input_sequences(4)
+      expect{words.generate(29)}.not_to raise_error(Markov::MalformedSequenceError)
+    end
+
+  end
 end
