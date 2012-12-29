@@ -21,7 +21,7 @@ module Markov
 
     def generate(desired_length = 20)
       output = []
-      first_item = random_input_sequence.split(joiner)
+      first_item = random_input_sequence.split(separator)
       chunk_size = first_item.length
 
       output += first_item
@@ -30,14 +30,14 @@ module Markov
 
       while output.length < desired_length
 
-        new_sequence = proportional_sample(input_sequences[current_item.join(joiner)])
+        new_sequence = proportional_sample(input_sequences[current_item.join(separator)])
 
         # If we've just produced the last full sequence from the input, punt
         # and get a random one. 
         # For example, if the input was "abcabd", "d" is an OK thing to
         # follow "ab", but we won't be able to find anything for "bd"
         if new_sequence.empty?
-          if input_sequences.keys.last == current_item.join(joiner)
+          if input_sequences.keys.last == current_item.join(separator)
             new_sequence = random_input_sequence
           else
             raise MalformedSequenceError.new("No entry for '#{current_item}'")
@@ -48,11 +48,11 @@ module Markov
         output << new_sequence
         current_item = output[-chunk_size..-1]
       end
-      output.join(joiner)
+      output.join(separator)
     end
 
-    def joiner
-      raise NotImplementedError.new "You must specify a joiner"
+    def separator
+      raise NotImplementedError.new "You must specify a separator"
     end
 
     def sequences_found_at_least_n_times(n = 2)

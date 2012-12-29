@@ -27,7 +27,7 @@ module Markov
       true
     end
 
-    def joiner
+    def separator
       ''
     end
 
