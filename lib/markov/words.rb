@@ -15,5 +15,9 @@ module Markov
       true
     end
 
+    def joiner
+      ' '
+    end
+
   end
 end

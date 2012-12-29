@@ -21,28 +21,37 @@ module Markov
 
     def generate(desired_length = 20)
       output_text = ''
-      chunk_size = input_sequences.keys.first.length
+      first_item = random_input_sequence
+      chunk_size = first_item.length
 
-      # Seed the output text with a random choice of our sequences
-      output_text << random_input_sequence
+      output_text << first_item
+
+      current_item = first_item
 
       while output_text.length < desired_length
 
-        sequence = output_text[-chunk_size..-1]
-        new_text = proportional_sample(input_sequences[sequence])
+        generated_sequence = output_text[-chunk_size..-1]
+        new_text = proportional_sample(input_sequences[generated_sequence])
 
         # If no luck, pick a random sequence
         if new_text.empty?
+          raise MalformedSequenceError.new("No entry for '#{generated_sequence}'")
           new_text = random_input_sequence
         end
 
         # Whatever we came up with, tack it onto the output
+        output_text << joiner if joiner
         output_text << new_text
+        current_item = new_text
       end
       output_text
     end
 
-    def see_phrases_occurring(n = 2)
+    def joiner
+      nil
+    end
+
+    def sequences_found_at_least_n_times(n = 2)
       input_sequences.select {|k, v| v.length > n }.sort_by{|k, v| 0 - v.length }.each do |k,v|
         puts "#{k} : #{v.length}"
       end
@@ -73,4 +82,5 @@ module Markov
     end
 
   end
+  class MalformedSequenceError < StandardError; end;
 end
