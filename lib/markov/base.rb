@@ -19,6 +19,7 @@ module Markov
       @input_sequences = Hash.new {|hash, key| hash[key] = Hash.new(0) }
     end
 
+    # TODO - DRY up and make clearer
     def generate(desired_length = 20)
       output = []
       first_item = random_input_sequence.split(separator)
