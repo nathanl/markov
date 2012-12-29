@@ -30,19 +30,18 @@ module Markov
 
       while output.length < desired_length
 
-        generated_sequence = output[-chunk_size..-1]
-        new_text = proportional_sample(input_sequences[generated_sequence])
+        new_text = proportional_sample(input_sequences[current_item])
 
         # If no luck, pick a random sequence
         if new_text.empty?
-          raise MalformedSequenceError.new("No entry for '#{generated_sequence}'")
+          raise MalformedSequenceError.new("No entry for '#{current_item}'")
           new_text = random_input_sequence
         end
 
         # Whatever we came up with, tack it onto the output
         output << joiner if joiner
         output << new_text
-        current_item = new_text
+        current_item = output[-chunk_size..-1]
       end
       output
     end
