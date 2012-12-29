@@ -49,10 +49,11 @@ describe Markov::Words do
 
   describe "always forming sequences that occur in the input" do
 
-    let(:input_text) { File.read('input_examples/constitution.txt') }
+    let(:input_text) { File.read('input_examples/constitution.txt')[0..53] }
 
     it "doesn't screw up" do
       srand(3)
+      puts "input was '#{input_text}'"
       words = Markov::Words.new(input_text)
       words.populate_input_sequences(4)
       expect{words.generate(29)}.not_to raise_error(Markov::MalformedSequenceError)

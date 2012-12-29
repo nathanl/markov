@@ -20,34 +20,33 @@ module Markov
     end
 
     def generate(desired_length = 20)
-      output = ''
-      first_item = random_input_sequence
+      output = []
+      first_item = random_input_sequence.split(joiner)
       chunk_size = first_item.length
 
-      output << first_item
+      output += first_item
 
       current_item = first_item
 
       while output.length < desired_length
 
-        new_text = proportional_sample(input_sequences[current_item])
+        new_sequence = proportional_sample(input_sequences[current_item.join(joiner)])
 
         # If no luck, pick a random sequence
-        if new_text.empty?
+        if new_sequence.empty?
           raise MalformedSequenceError.new("No entry for '#{current_item}'")
-          new_text = random_input_sequence
+          new_sequence = random_input_sequence
         end
 
         # Whatever we came up with, tack it onto the output
-        output << joiner if joiner
-        output << new_text
+        output << new_sequence
         current_item = output[-chunk_size..-1]
       end
-      output
+      output.join(joiner)
     end
 
     def joiner
-      nil
+      raise NotImplementedError.new "You must specify a joiner"
     end
 
     def sequences_found_at_least_n_times(n = 2)
