@@ -23,12 +23,38 @@ describe Markov::Chars do
   describe "generated text" do
 
     let(:input_text) { File.read('input_examples/raven.txt') }
-    srand(6)
 
-    it "resembles the original" do
-      chars = Markov::Chars.new(input_text)
-      chars.populate_input_sequences(4)
-      expect(chars.generate(29)).to eq('enchanted on the silken still')
+    context "when produced from roughly word-size chunks" do
+
+      it "has mostly real words, rearranged" do
+        srand(6)
+        chars = Markov::Chars.new(input_text)
+        chars.populate_input_sequences(4)
+        expect(chars.generate(29)).to eq('enchanted on the silken still')
+      end
+
+    end
+
+    context "when produced from smaller chunks" do
+
+      it "contains nonsense words that resemble the original ones" do
+        srand(1)
+        chars = Markov::Chars.new(input_text)
+        chars.populate_input_sequences(3)
+        expect(chars.generate(42)).to eq(' Doubtle my chamber his I hat my bothing, ')
+      end
+
+    end
+
+    context "when produced from even smaller chunks" do
+
+      it "bears an even looser resemblance to the original" do
+        srand(15)
+        chars = Markov::Chars.new(input_text)
+        chars.populate_input_sequences(2)
+        expect(chars.generate(68)).to eq("Hophinget soudden my sping, prom the all bacif frong o'er, Thispourd")
+      end
+
     end
 
   end
