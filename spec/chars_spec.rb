@@ -1,14 +1,12 @@
 require 'markov/chars'
 
-# Make random behavior predictable
-srand(1)
-
 describe Markov::Chars do
 
-  let(:input_text) { "abcabcabd" }
-
   describe "populating input sequences" do
+
+    let(:input_text) { "abcabcabd" }
     let(:chars) { Markov::Chars.new(input_text) }
+    srand(1)
 
     it "samples the input in the correct chunk size" do
       chars.populate_input_sequences(2)
@@ -22,16 +20,15 @@ describe Markov::Chars do
 
   end
 
-  describe "generating output" do
+  describe "generated text" do
 
-    let(:input_text) {
-      File.read('input_examples/constitution.txt')
-    }
+    let(:input_text) { File.read('input_examples/raven.txt') }
+    srand(6)
 
-    it "should be awesome" do
+    it "resembles the original" do
       chars = Markov::Chars.new(input_text)
       chars.populate_input_sequences(4)
-      expect(chars.generate(50)).to eq('Coin, and Proceed of Vote; the Executives after of')
+      expect(chars.generate(29)).to eq('enchanted on the silken still')
     end
 
   end
