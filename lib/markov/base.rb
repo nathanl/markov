@@ -32,10 +32,16 @@ module Markov
 
         new_sequence = proportional_sample(input_sequences[current_item.join(joiner)])
 
-        # If no luck, pick a random sequence
+        # If we've just produced the last full sequence from the input, punt
+        # and get a random one. 
+        # For example, if the input was "abcabd", "d" is an OK thing to
+        # follow "ab", but we won't be able to find anything for "bd"
         if new_sequence.empty?
-          raise MalformedSequenceError.new("No entry for '#{current_item}'")
-          new_sequence = random_input_sequence
+          if input_sequences.keys.last == current_item.join(joiner)
+            new_sequence = random_input_sequence
+          else
+            raise MalformedSequenceError.new("No entry for '#{current_item}'")
+          end
         end
 
         # Whatever we came up with, tack it onto the output
