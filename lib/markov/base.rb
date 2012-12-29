@@ -20,17 +20,17 @@ module Markov
     end
 
     def generate(desired_length = 20)
-      output_text = ''
+      output = ''
       first_item = random_input_sequence
       chunk_size = first_item.length
 
-      output_text << first_item
+      output << first_item
 
       current_item = first_item
 
-      while output_text.length < desired_length
+      while output.length < desired_length
 
-        generated_sequence = output_text[-chunk_size..-1]
+        generated_sequence = output[-chunk_size..-1]
         new_text = proportional_sample(input_sequences[generated_sequence])
 
         # If no luck, pick a random sequence
@@ -40,11 +40,11 @@ module Markov
         end
 
         # Whatever we came up with, tack it onto the output
-        output_text << joiner if joiner
-        output_text << new_text
+        output << joiner if joiner
+        output << new_text
         current_item = new_text
       end
-      output_text
+      output
     end
 
     def joiner
