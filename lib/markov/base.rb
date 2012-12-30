@@ -21,35 +21,35 @@ module Markov
 
     # TODO - DRY up and make clearer
     def generate(desired_length = 20)
-      output = []
+      chain = []
       # Here I'm splitting it so that I can ask its length in the correct
       # units - chars or words
-      current_sequence = random_input_sequence.split(separator)
-      chunk_size = current_sequence.length
+      links = random_input_sequence.split(separator)
+      chunk_size = links.length
 
-      output += current_sequence
+      chain += links
 
-      while output.length < desired_length
+      while chain.length < desired_length
 
-        new_sequence = proportional_sample(input_sequences[current_sequence.join(separator)])
+        next_link = proportional_sample(input_sequences[links.join(separator)])
 
         # If we've just produced the last full sequence from the input, punt
         # and get a random one. 
         # For example, if the input was "abcabd", "d" is an OK thing to
         # follow "ab", but we won't be able to find anything for "bd"
-        if new_sequence.empty?
-          if input_sequences.keys.last == current_sequence.join(separator)
-            new_sequence = random_input_sequence
+        if next_link.empty?
+          if input_sequences.keys.last == links.join(separator)
+            next_link = random_input_sequence
           else
-            raise MalformedSequenceError.new("No entry for '#{current_sequence}'")
+            raise MalformedSequenceError.new("No entry for '#{links}'")
           end
         end
 
-        # Whatever we came up with, tack it onto the output
-        output << new_sequence
-        current_sequence = output[-chunk_size..-1]
+        # Whatever we came up with, tack it onto the chain
+        chain << next_link
+        links = links[1..-1] + Array(next_link)
       end
-      output.join(separator)
+      chain.join(separator)
     end
 
     def separator
