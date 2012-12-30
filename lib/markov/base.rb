@@ -22,32 +22,32 @@ module Markov
     # TODO - DRY up and make clearer
     def generate(desired_length = 20)
       output = []
-      first_item = random_input_sequence.split(separator)
-      chunk_size = first_item.length
+      # Here I'm splitting it so that I can ask its length in the correct
+      # units - chars or words
+      current_sequence = random_input_sequence.split(separator)
+      chunk_size = current_sequence.length
 
-      output += first_item
-
-      current_item = first_item
+      output += current_sequence
 
       while output.length < desired_length
 
-        new_sequence = proportional_sample(input_sequences[current_item.join(separator)])
+        new_sequence = proportional_sample(input_sequences[current_sequence.join(separator)])
 
         # If we've just produced the last full sequence from the input, punt
         # and get a random one. 
         # For example, if the input was "abcabd", "d" is an OK thing to
         # follow "ab", but we won't be able to find anything for "bd"
         if new_sequence.empty?
-          if input_sequences.keys.last == current_item.join(separator)
+          if input_sequences.keys.last == current_sequence.join(separator)
             new_sequence = random_input_sequence
           else
-            raise MalformedSequenceError.new("No entry for '#{current_item}'")
+            raise MalformedSequenceError.new("No entry for '#{current_sequence}'")
           end
         end
 
         # Whatever we came up with, tack it onto the output
         output << new_sequence
-        current_item = output[-chunk_size..-1]
+        current_sequence = output[-chunk_size..-1]
       end
       output.join(separator)
     end
